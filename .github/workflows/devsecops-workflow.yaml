@@ -16,7 +16,7 @@ jobs:
           distribution: 'microsoft'
 
       - name: Run SonarCloud analysis
-        shell: powershell
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
