@@ -3,31 +3,33 @@ on: push
 
 jobs:
   build:
-      runs-on: ubuntu-latest
-      name: Build unit test, run SonarCloud scan
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
+    runs-on: windows-latest
+    name: Build unit test, run SonarCloud scan
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-        - name: Set up JDK 21
-          uses: actions/setup-java@v4
-          with:
-            java-version: '21'
-            distribution: 'microsoft'
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
 
-        - name: Install SonarCloud scanner
-          run: |
-            mkdir -p ~/.sonar/scanner
-            dotnet tool update dotnet-sonarscanner --tool-path ~/.sonar/scanner
+      - name: Install SonarCloud scanner
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner 
 
-        - name: Build
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: |
-            ~/.sonar/scanner/dotnet-sonarscanner begin /k:"dotnet-playground" /o:"dotnet-playground" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-            dotnet build SomeConsoleApplication.sln
-            ~/.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      - name: Build
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"dotnet-playground" /o:"dotnet-playground" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build SomeConsoleApplication.sln
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
   security:
     runs-on: ubuntu-latest
