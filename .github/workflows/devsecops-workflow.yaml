@@ -11,7 +11,7 @@ jobs:
 
       - name: Download and Install .NET Framework 4.5.2 Developer Pack
         run: |
-          Invoke-WebRequest https://download.microsoft.com/download/B/4/0/B40A1F1F-9D4D-4D6F-8BC7-FE181E1012C9/NDP452-DevPack-KB2901954-ENU.exe -OutFile installer.exe
+          Invoke-WebRequest https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net452-developer-pack-offline-installer -OutFile installer.exe
           Start-Process installer.exe -ArgumentList '/quiet', '/norestart' -Wait
         shell: powershell
 
